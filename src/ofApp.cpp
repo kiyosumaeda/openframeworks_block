@@ -137,16 +137,18 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key == 's') {
-        if (isFinished == true) {
-            level++;
+    if (life != 0) {
+        if (key == 's') {
+            if (isFinished == true) {
+                level++;
+            }
+            if (isFinished == false && isPlaying == false) {
+                life--;
+            }
+            isStarting = true;
+            isPlaying = true;
+            isFinished = false;
         }
-        if (isFinished == false && isPlaying == false) {
-            life--;
-        }
-        isStarting = true;
-        isPlaying = true;
-        isFinished = false;
     }
 }
 
