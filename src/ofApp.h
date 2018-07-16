@@ -44,4 +44,5 @@ class ofApp : public ofBaseApp{
         bool isFinished;
         int level;
         int rest;
+        int life;
 };
