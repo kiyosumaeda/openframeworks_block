@@ -18,11 +18,18 @@ void ofApp::setup(){
     block_width = ofGetWidth() / BLOCK_NUM_X;
     block_height = 200 / BLOCK_NUM_Y;
     
+    for (int i = 0; i < BLOCK_NUM_X; i++) {
+        for (int j = 0; j < BLOCK_NUM_Y; j++) {
+            isSurvival[i][j] = true;
+        }
+    }
+    
     isStarting = true;
     isPlaying = true;
     isFinished = false;
     
     level = 1;
+    life = 3;
 }
 
 //--------------------------------------------------------------
@@ -34,10 +41,11 @@ void ofApp::update(){
         bullet_dy = 7;
         for (int i = 0; i < BLOCK_NUM_X; i++) {
             for (int j = 0; j < BLOCK_NUM_Y; j++) {
-                block[i][j][0] = i * ofGetWidth() / BLOCK_NUM_X;
-                block[i][j][1] = j * 200 / BLOCK_NUM_Y;
-                block_color[i][j].set(ofRandom(180,255), ofRandom(180,255), ofRandom(180,255));
-                isSurvival[i][j] = true;
+                if (isSurvival[i][j] == true) {
+                    block[i][j][0] = i * ofGetWidth() / BLOCK_NUM_X;
+                    block[i][j][1] = j * 200 / BLOCK_NUM_Y;
+                    block_color[i][j].set(ofRandom(180,255), ofRandom(180,255), ofRandom(180,255));
+                }
             }
         }
         isStarting = false;
@@ -90,6 +98,12 @@ void ofApp::update(){
     if (rest == BLOCK_NUM_X * BLOCK_NUM_Y) {
         isPlaying = false;
         isFinished = true;
+        for (int i = 0; i < BLOCK_NUM_X; i++) {
+            for (int j = 0; j < BLOCK_NUM_Y; j++) {
+                isSurvival[i][j] = true;
+            }
+        }
+        rest = 0;
     }
 }
 
@@ -99,8 +113,10 @@ void ofApp::draw(){
     if (isPlaying == true && isFinished == false) {
         ofDrawBitmapString("level : " + ofToString(level), 300, 280);
         ofDrawBitmapString("score : " + ofToString(rest), 300, 300);
+        ofDrawBitmapString("life : " + ofToString(life), 300, 320);
     } else if (isPlaying == false && isFinished == false) {
-        ofDrawBitmapString("GameOver", 400, 400);
+        if (life == 0) ofDrawBitmapString("GameOver", 400, 400);
+        else ofDrawBitmapString("Do you want to restart ?", 400, 400);
     } else if (isPlaying == false && isFinished == true) {
         ofDrawBitmapString("Finished!", 400, 400);
     }
@@ -124,6 +140,9 @@ void ofApp::keyPressed(int key){
     if (key == 's') {
         if (isFinished == true) {
             level++;
+        }
+        if (isFinished == false && isPlaying == false) {
+            life--;
         }
         isStarting = true;
         isPlaying = true;
