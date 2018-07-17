@@ -45,4 +45,5 @@ class ofApp : public ofBaseApp{
         int level;
         int rest;
         int life;
+        int score;
 };

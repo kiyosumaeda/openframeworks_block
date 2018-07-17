@@ -4,11 +4,10 @@
 void ofApp::setup(){
     ofSetBackgroundColor(0);
     ofSetCircleResolution(64);
-    ofSetFrameRate(90);
+    ofSetFrameRate(120);
     ofEnableAlphaBlending();
     
     player_y = ofGetHeight();
-    player_width = 100;
     player_height = 20;
     
     bullet_x = 300;
@@ -30,15 +29,22 @@ void ofApp::setup(){
     
     level = 1;
     life = 3;
+    
+    score = 0;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     if (isStarting == true) {
+        
+        if (level == 1) player_width = 200;
+        else if (level == 2) player_width = 150;
+        else player_width = 50 + 150 / level;
+        
         bullet_x = 300;
         bullet_y = 300;
-        bullet_dx = 7;
-        bullet_dy = 7;
+        bullet_dx = 6 + level;
+        bullet_dy = 6 + level;
         for (int i = 0; i < BLOCK_NUM_X; i++) {
             for (int j = 0; j < BLOCK_NUM_Y; j++) {
                 if (isSurvival[i][j] == true) {
@@ -68,7 +74,7 @@ void ofApp::update(){
         }
     }
     
-    rest = 0;
+    rest = 50;
     for (int i = 0; i < BLOCK_NUM_X; i++) {
         for (int j = 0; j < BLOCK_NUM_Y; j++) {
             if ((bullet_x >= block[i][j][0]) && (bullet_x <= block[i][j][0] + block_width) && (bullet_y - bullet_r < block[i][j][1] + block_height) && (bullet_y + bullet_r > block[i][j][1] + block_height)) {
@@ -92,10 +98,13 @@ void ofApp::update(){
                 block[i][j][0] = -1000;
                 block[i][j][1] = -1000;
             }
-            if (isSurvival[i][j] == false) rest++;
+            if (isSurvival[i][j] == false) rest--;
         }
     }
-    if (rest == BLOCK_NUM_X * BLOCK_NUM_Y) {
+    
+    score = level * 50 - rest;
+    
+    if (rest == 0) {
         isPlaying = false;
         isFinished = true;
         for (int i = 0; i < BLOCK_NUM_X; i++) {
@@ -112,7 +121,7 @@ void ofApp::draw(){
     ofSetColor(255);
     if (isPlaying == true && isFinished == false) {
         ofDrawBitmapString("level : " + ofToString(level), 300, 280);
-        ofDrawBitmapString("score : " + ofToString(rest), 300, 300);
+        ofDrawBitmapString("score : " + ofToString(score), 300, 300);
         ofDrawBitmapString("life : " + ofToString(life), 300, 320);
     } else if (isPlaying == false && isFinished == false) {
         if (life == 0) ofDrawBitmapString("GameOver", 400, 400);
@@ -141,6 +150,9 @@ void ofApp::keyPressed(int key){
         if (key == 's') {
             if (isFinished == true) {
                 level++;
+                if (level >= 2) {
+                    life++;
+                }
             }
             if (isFinished == false && isPlaying == false) {
                 life--;
@@ -148,6 +160,15 @@ void ofApp::keyPressed(int key){
             isStarting = true;
             isPlaying = true;
             isFinished = false;
+        }
+    } else if (life == 0) {
+        if (key == 's') {
+            if (isFinished == true) {
+                level++;
+                if (level >= 2) {
+                    life++;
+                }
+            }
         }
     }
 }
