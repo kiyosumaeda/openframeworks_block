@@ -5,6 +5,7 @@
 #define BULLET_NUM 10
 #define BLOCK_NUM_X 10
 #define BLOCK_NUM_Y 5
+#define NUM_BULLET_SHOT 10
 
 class ofApp : public ofBaseApp{
 
@@ -28,7 +29,15 @@ class ofApp : public ofBaseApp{
         float player_x;   //プレイヤーのx座標
         float player_y;   //プレイヤーのy座標
         float player_width;   //プレイヤーの横幅
-        float player_height;   //プレイヤーの縦幅
+        float player_height;
+        float shot_bullet_width;
+        float shot_bullet_height;
+        float shot_bullet_x[NUM_BULLET_SHOT];
+        float shot_bullet_y[NUM_BULLET_SHOT];
+        float shot_bullet_dx[NUM_BULLET_SHOT];
+        float shot_bullet_dy[NUM_BULLET_SHOT];
+        int num_shot;
+        bool shot_bullet[NUM_BULLET_SHOT];
         float bullet_x;   //弾のx座標
         float bullet_y;   //弾のy座標
         float bullet_dx;   //弾のx座標変化量

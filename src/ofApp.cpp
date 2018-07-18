@@ -10,6 +10,15 @@ void ofApp::setup(){
     player_y = ofGetHeight();
     player_height = 20;
     
+    shot_bullet_width = 1;
+    shot_bullet_height = 5;
+    num_shot = 0;
+    for (int i = 0; i < NUM_BULLET_SHOT; i++) {
+        shot_bullet_y[i] = ofGetHeight();
+        shot_bullet_dy[i] = 0;
+        shot_bullet[i] = false;
+    }
+    
     bullet_x = 300;
     bullet_y = 300;
     bullet_r = 10;
@@ -142,6 +151,11 @@ void ofApp::draw(){
             }
         }
     }
+    
+    for (int i = 0; i < NUM_BULLET_SHOT; i++) {
+        ofSetColor(255);
+        ofDrawRectangle(shot_bullet_x[i], shot_bullet_y[i] - 10 * i, shot_bullet_width, shot_bullet_height);
+    }
 }
 
 //--------------------------------------------------------------
@@ -165,10 +179,16 @@ void ofApp::keyPressed(int key){
         if (key == 's') {
             if (isFinished == true) {
                 level++;
-                if (level >= 2) {
+                if (level >= 2) {   //レベルが上がるごとにライフ追加
                     life++;
                 }
             }
+        }
+    }
+    if (key == 'b') {
+        if (num_shot <= 9) {
+            shot_bullet[num_shot] = true;
+            num_shot++;
         }
     }
 }
@@ -182,6 +202,9 @@ void ofApp::keyReleased(int key){
 void ofApp::mouseMoved(int x, int y ){
     player_x = x;
     //player_y = y;
+    for (int num_shot = 0; num_shot < NUM_BULLET_SHOT; num_shot++) {
+        if (shot_bullet[num_shot] == false) shot_bullet_x[num_shot] = x;
+    }
 }
 
 //--------------------------------------------------------------
