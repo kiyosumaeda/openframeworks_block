@@ -123,6 +123,26 @@ void ofApp::update(){
         }
         rest = 0;
     }
+    
+    for (int i = 0; i < NUM_BULLET_SHOT; i++) {
+        shot_bullet_y[i] += shot_bullet_dy[i];
+        if (shot_bullet[i] == true) {
+            shot_bullet_dy[i] = -8;
+        } else {
+            shot_bullet_y[i] = ofGetHeight();
+        }
+        
+        for (int j = 0; j < BLOCK_NUM_X; j++) {
+            for (int k = 0; k < BLOCK_NUM_Y; k++) {
+                if (shot_bullet_x[i] >= block[j][k][0] && shot_bullet_x[i] <= block[j][k][0] + block_width && shot_bullet_y[i] < block[j][k][1] + block_height && shot_bullet_y[i] > block[j][k][1]) {
+                    isSurvival[j][k] = false;
+                    block[j][k][0] = -1000;
+                    block[j][k][1] = -1000;
+                    shot_bullet[i] = false;
+                }
+            }
+        }
+    }
 }
 
 //--------------------------------------------------------------
@@ -138,6 +158,7 @@ void ofApp::draw(){
     } else if (isPlaying == false && isFinished == true) {
         ofDrawBitmapString("Finished!", 400, 400);
     }
+    ofDrawBitmapString("shot_rest : " + ofToString(10 - num_shot), 300, 340);
     
     ofSetColor(255, 0, 0);
     ofDrawRectangle(player_x - player_width / 2, player_y - player_height / 2, player_width, player_height);
@@ -154,7 +175,7 @@ void ofApp::draw(){
     
     for (int i = 0; i < NUM_BULLET_SHOT; i++) {
         ofSetColor(255);
-        ofDrawRectangle(shot_bullet_x[i], shot_bullet_y[i] - 10 * i, shot_bullet_width, shot_bullet_height);
+        ofDrawRectangle(shot_bullet_x[i], shot_bullet_y[i], shot_bullet_width, shot_bullet_height);
     }
 }
 
@@ -166,6 +187,7 @@ void ofApp::keyPressed(int key){
                 level++;
                 if (level >= 2) {
                     life++;
+                    num_shot = 0;
                 }
             }
             if (isFinished == false && isPlaying == false) {
@@ -181,6 +203,7 @@ void ofApp::keyPressed(int key){
                 level++;
                 if (level >= 2) {   //レベルが上がるごとにライフ追加
                     life++;
+                    num_shot = 0;
                 }
             }
         }
