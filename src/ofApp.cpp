@@ -127,7 +127,7 @@ void ofApp::update(){
     for (int i = 0; i < NUM_BULLET_SHOT; i++) {
         shot_bullet_y[i] += shot_bullet_dy[i];
         if (shot_bullet[i] == true) {
-            shot_bullet_dy[i] = -8;
+            shot_bullet_dy[i] = -12;
         } else {
             shot_bullet_y[i] = ofGetHeight();
         }
@@ -185,23 +185,29 @@ void ofApp::keyPressed(int key){
         if (key == 's') {
             if (isFinished == true) {
                 level++;
-                if (level >= 2) {
+                isStarting = true;
+                isPlaying = true;
+                isFinished = false;
+                if (level >= 4) {
                     life++;
                     num_shot = 0;
                 }
             }
             if (isFinished == false && isPlaying == false) {
                 life--;
+                isStarting = true;
+                isPlaying = true;
+                isFinished = false;
             }
-            isStarting = true;
-            isPlaying = true;
-            isFinished = false;
         }
     } else if (life == 0) {
         if (key == 's') {
             if (isFinished == true) {
                 level++;
-                if (level >= 2) {   //レベルが上がるごとにライフ追加
+                isStarting = true;
+                isPlaying = true;
+                isFinished = false;
+                if (level >= 4) {   //レベル3以降、レベルが上がるごとにライフ追加
                     life++;
                     num_shot = 0;
                 }
@@ -209,7 +215,7 @@ void ofApp::keyPressed(int key){
         }
     }
     if (key == 'b') {
-        if (num_shot <= 9) {
+        if (num_shot <= 9  && isPlaying == true) {
             shot_bullet[num_shot] = true;
             num_shot++;
         }
