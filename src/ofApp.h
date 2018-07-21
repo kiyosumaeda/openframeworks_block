@@ -55,4 +55,8 @@ class ofApp : public ofBaseApp{
         int rest;
         int life;
         int score;
+        ofSoundPlayer shot_sound;
+        ofSoundPlayer player_bullet;
+        ofSoundPlayer bullet_block;
+        ofSoundPlayer shot_block;
 };

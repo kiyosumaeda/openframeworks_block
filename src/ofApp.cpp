@@ -40,6 +40,15 @@ void ofApp::setup(){
     life = 3;
     
     score = 0;
+    
+    shot_sound.loadSound("shot1.mp3");
+    shot_sound.setLoop(false);
+    player_bullet.loadSound("se_breakout_1.mp3");
+    player_bullet.setLoop(false);
+    bullet_block.loadSound("se_breakout_2.mp3");
+    bullet_block.setLoop(false);
+    shot_block.loadSound("shot-struck1.mp3");
+    shot_block.setLoop(false);
 }
 
 //--------------------------------------------------------------
@@ -69,10 +78,17 @@ void ofApp::update(){
     if (isPlaying == true) {
         bullet_x += bullet_dx;
         bullet_y += bullet_dy;
-        if (bullet_x > ofGetWidth() || bullet_x < 0) bullet_dx = -bullet_dx;
-        if (bullet_y < 0) bullet_dy = -bullet_dy;
+        if (bullet_x > ofGetWidth() || bullet_x < 0) {
+            bullet_dx = -bullet_dx;
+            player_bullet.play();
+        }
+        if (bullet_y < 0) {
+            bullet_dy = -bullet_dy;
+            player_bullet.play();
+        }
         if (bullet_y + bullet_r > ofGetHeight()) isPlaying = false;
         if ((bullet_y + bullet_r > player_y - player_height) && (bullet_x >= player_x - player_width / 2) && (bullet_x <= player_x + player_width / 2)) {
+            player_bullet.play();
             float reflection_random = ofRandom(100);
             if (reflection_random < 90) {
                 bullet_dy = -bullet_dy * ofRandom(0.9, 1.1);
@@ -91,21 +107,25 @@ void ofApp::update(){
                 isSurvival[i][j] = false;
                 block[i][j][0] = -1000;
                 block[i][j][1] = -1000;
+                bullet_block.play();
             } else if ((bullet_x - bullet_r < block[i][j][0] + block_width) && (bullet_x + bullet_r > block[i][j][0] + block_width) && (bullet_y > block[i][j][1]) && (bullet_y < block[i][j][1] + block_height)) {
                 bullet_dx = -bullet_dx;
                 isSurvival[i][j] = false;
                 block[i][j][0] = -1000;
                 block[i][j][1] = -1000;
+                bullet_block.play();
             } else if ((bullet_x > block[i][j][0]) && (bullet_x <= block[i][j][0] + block_width) && (bullet_y + bullet_r > block[i][j][1]) && (bullet_y - bullet_r < block[i][j][1])) {
                 bullet_dy = -bullet_dy;
                 isSurvival[i][j] = false;
                 block[i][j][0] = -1000;
                 block[i][j][1] = -1000;
+                bullet_block.play();
             } else if ((bullet_x + bullet_r > block[i][j][0]) && (bullet_x - bullet_r < block[i][j][0]) && (bullet_y > block[i][j][1]) && (bullet_y < block[i][j][1] + block_height)) {
                 bullet_dx = -bullet_dx;
                 isSurvival[i][j] = false;
                 block[i][j][0] = -1000;
                 block[i][j][1] = -1000;
+                bullet_block.play();
             }
             if (isSurvival[i][j] == false) rest--;
         }
@@ -139,6 +159,7 @@ void ofApp::update(){
                     block[j][k][0] = -1000;
                     block[j][k][1] = -1000;
                     shot_bullet[i] = false;
+                    shot_block.play();
                 }
             }
         }
@@ -188,6 +209,7 @@ void ofApp::keyPressed(int key){
                 isStarting = true;
                 isPlaying = true;
                 isFinished = false;
+                if (level >= 2) num_shot = 0;
                 if (level >= 4) {
                     life++;
                     num_shot = 0;
@@ -207,6 +229,7 @@ void ofApp::keyPressed(int key){
                 isStarting = true;
                 isPlaying = true;
                 isFinished = false;
+                if (level >= 2) num_shot = 0;
                 if (level >= 4) {   //レベル3以降、レベルが上がるごとにライフ追加
                     life++;
                     num_shot = 0;
@@ -218,6 +241,7 @@ void ofApp::keyPressed(int key){
         if (num_shot <= 9  && isPlaying == true) {
             shot_bullet[num_shot] = true;
             num_shot++;
+            shot_sound.play();
         }
     }
 }
